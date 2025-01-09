@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { first } from 'rxjs';
+import { Gif, SearchResponse } from '../interfaces/gif.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GifsService {
 
+  public giflist : Gif[]= [];
   private _tagsHistory: string[]=[];
   private apiKey : string = environment.giphyApiKey;
   private serviceUrl : string = 'https://api.giphy.com/v1/gifs';
@@ -33,13 +35,14 @@ export class GifsService {
     this.organizeHistory(tag)
     const params= new HttpParams()
     .set('api_key',this.apiKey)
-    .set('limit','10')
+    .set('limit','12')
     .set('q',tag)
 
 
-    this.http.get(`${this.serviceUrl}/search`,{params})
+    this.http.get<SearchResponse>(`${this.serviceUrl}/search`,{params})
     .subscribe(resp=>{
-      console.log(resp)
+
+    this.giflist = resp.data;
     });
 
 
